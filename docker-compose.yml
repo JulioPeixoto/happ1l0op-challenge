@@ -1,0 +1,43 @@
+services:
+  web:
+    build: .
+    container_name: fastapi_service
+    env_file:
+      - .env
+    ports:
+      - "8008:8008"
+    volumes:
+      - .:/app              
+      - ./service:/app/service
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: fastapi_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+volumes:
+  postgres_data:
+    driver: local
