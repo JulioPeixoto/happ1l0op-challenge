@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Session, create_engine
 from typing import Generator
-from settings import DATABASE_URL
+from src.settings import DATABASE_URL
 
 
 sql_engine = create_engine(
@@ -18,8 +18,8 @@ def get_session() -> Generator[Session, None, None]:
 
 
 def seed_initial_data():
-    from model.product import Product
-
+    from src.model.product import Product
+    
     with Session(sql_engine) as session:
         existing_products = session.query(Product).first()
         if existing_products:

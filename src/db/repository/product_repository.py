@@ -24,7 +24,10 @@ class ProductRepository:
         return self.session.exec(statement).first()
 
     def get_available_products(self) -> List[Product]:
-        statement = select(Product).where(Product.stock_quantity > 0)
+        statement = select(Product).where(
+            Product.is_active == True,
+            Product.stock_quantity > 0
+        )
         return self.session.exec(statement).all()
 
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Product]:
@@ -44,12 +47,9 @@ class ProductRepository:
     def search_by_name(self, name: str) -> List[Product]:
         statement = select(Product).where(
             Product.name.ilike(f"%{name}%"),
+            Product.is_active == True
         )
         return self.session.exec(statement).all()
-
-    def check_stock_availability(self, product_id: int, quantity: int) -> bool:
-        product = self.get_by_id(product_id)
-        return product is not None and product.stock_quantity >= quantity
 
     def update(self, product_id: int, product_data: ProductUpdate) -> Optional[Product]:
         product = self.get_by_id(product_id)
@@ -79,12 +79,5 @@ class ProductRepository:
             self.session.refresh(product)
         return product
 
-    def get_low_stock_products(self, threshold: int = 5) -> List[Product]:
-        statement = select(Product).where(
-            Product.stock_quantity <= threshold, Product.stock_quantity > 0
-        )
-        return self.session.exec(statement).all()
 
-    def get_out_of_stock_products(self) -> List[Product]:
-        statement = select(Product).where(Product.stock_quantity == 0)
-        return self.session.exec(statement).all()
+
