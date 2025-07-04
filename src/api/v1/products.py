@@ -6,8 +6,6 @@ from src.model.product import ProductCreate, ProductUpdate, ProductResponse
 from src.service.product_service import ProductService
 from src.db.database import get_session
 
-from src.model.transaction import AIResponse
-from src.service.purchase_service import PurchaseService
 
 router = APIRouter(tags=["products"])
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 
 
@@ -27,3 +27,16 @@ class PurchaseIntent(BaseModel):
                 }
             ]
         }
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+class AIResponse(BaseModel):
+    success: bool
+    message: str
+    purchase_intent: Optional[PurchaseIntent] = None
+    transaction_id: Optional[int] = None
+    total_price: Optional[float] = None
+    products: Optional[List[dict]] = None

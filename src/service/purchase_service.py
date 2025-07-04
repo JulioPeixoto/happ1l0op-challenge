@@ -6,17 +6,40 @@ from src.db.repository.transaction_repository import TransactionRepository
 from src.model.transaction import (
     TransactionCreate,
     TransactionStatus,
-    AIResponse,
 )
-from src.model.purchase import PurchaseIntent, UserIntent
+from src.model.purchase import PurchaseIntent, UserIntent, AIResponse
 from src.model.product import Product
+from src.core.ai_client import client
+from src.core.prompts import PURCHASE_PROMPT
 
 
 class PurchaseService:
-    def __init__(self, session: Session):
+    def __init__(self, session: Session = None):
         self.session = session
         self.product_repo = ProductRepository(session)
         self.transaction_repo = TransactionRepository(session)
+        self.client = client
+
+    def parse_user_message(self, user_message: str) -> PurchaseIntent:
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                response_model=PurchaseIntent,
+                messages=[
+                    {"role": "system", "content": PURCHASE_PROMPT},
+                    {"role": "user", "content": user_message},
+                ],
+                temperature=0.1,
+            )
+            return response
+
+        except Exception as e:
+            return PurchaseIntent(
+                intent=UserIntent.UNKNOWN,
+                product_name=None,
+                quantity=None,
+                confidence=0.0,
+            )
 
     def process_purchase(self, intent: PurchaseIntent, user_message: str) -> AIResponse:
         if intent.intent != UserIntent.PURCHASE:
@@ -26,6 +49,7 @@ class PurchaseService:
             return AIResponse(
                 success=False,
                 message="Please specify which product and how many you want. For example: 'I want 2 cokes'",
+                purchase_intent=intent,
             )
 
         product = self._find_product_by_name(intent.product_name)
@@ -34,15 +58,21 @@ class PurchaseService:
             return AIResponse(
                 success=False,
                 message=f"Sorry, I don't have '{intent.product_name}'. Available products: {available_products}",
+                purchase_intent=intent,
             )
 
         if product.stock_quantity < intent.quantity:
             return AIResponse(
                 success=False,
-                message=f"Sorry, I only have {product.stock_quantity} {product.name} in stock.",
+                message=f"Sorry, we only have {product.stock_quantity} {product.name} in stock.",
+                purchase_intent=intent,
             )
 
         unit_price = product.price
+        print(
+            f"DEBUG: Product '{product.name}' found with price: {unit_price} (type: {type(unit_price)})"
+        )
+
         total_price = unit_price * intent.quantity
 
         transaction_data = TransactionCreate(
@@ -65,7 +95,9 @@ class PurchaseService:
                 transaction.status = TransactionStatus.FAILED
                 self.session.commit()
                 return AIResponse(
-                    success=False, message="Transaction failed. Please try again."
+                    success=False,
+                    message="Transaction failed due to a stock issue. Please try again.",
+                    purchase_intent=intent,
                 )
 
             transaction.status = TransactionStatus.SUCCESS
@@ -73,7 +105,8 @@ class PurchaseService:
 
             return AIResponse(
                 success=True,
-                message=f"🥤 Great! I've dispensed {intent.quantity} {product.name} for ${total_price:.2f}. Enjoy your drink!",
+                message=f"Great! I've dispensed {intent.quantity} {product.name} for ${total_price:.2f}. Enjoy your drink!",
+                purchase_intent=intent,
                 transaction_id=transaction.id,
                 total_price=float(total_price),
             )
@@ -81,7 +114,8 @@ class PurchaseService:
         except Exception as e:
             return AIResponse(
                 success=False,
-                message="Sorry, something went wrong with your purchase. Please try again.",
+                message="Sorry, a critical error occurred with your purchase. Please try again.",
+                purchase_intent=intent,
             )
 
     def _handle_non_purchase_intent(self, intent: PurchaseIntent) -> AIResponse:
@@ -95,12 +129,14 @@ class PurchaseService:
                 return AIResponse(
                     success=True,
                     message="Which product would you like to check stock for?",
+                    purchase_intent=intent,
                 )
 
         else:
             return AIResponse(
                 success=True,
-                message="I'm a soda vending machine! You can:\n• Buy products: 'I want 2 cokes'\n• Check inventory: 'What do you have?'\n• Check stock: 'How many sprites are left?'",
+                message="I'm a soda vending machine! You can:\n Buy products: 'I want 2 cokes'\n Check inventory: 'What do you have?'\n Check stock: 'How many sprites are left?'",
+                purchase_intent=intent,
             )
 
     def get_available_products(self) -> AIResponse:

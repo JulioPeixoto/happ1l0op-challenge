@@ -2,9 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from src.db.database import get_session
-from src.service.ai_service import AIService
 from src.service.purchase_service import PurchaseService
-from src.model.ai import AIResponse, ChatRequest
+from src.model.purchase import AIResponse, ChatRequest
 
 router = APIRouter(tags=["vending-machine"])
 
@@ -14,7 +13,7 @@ def chat_with_vending_machine(
     request: ChatRequest, session: Session = Depends(get_session)
 ):
     try:
-        ai_service = AIService()
+        ai_service = PurchaseService()
         purchase_service = PurchaseService(session)
         intent = ai_service.parse_user_message(request.message)
         response = purchase_service.process_purchase(intent, request.message)
@@ -24,6 +23,7 @@ def chat_with_vending_machine(
         raise HTTPException(
             status_code=500,
             detail="Sorry, I'm having trouble right now. Please try again in a moment.",
+            message=str(e),
         )
 
 
