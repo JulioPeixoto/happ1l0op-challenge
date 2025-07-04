@@ -22,7 +22,7 @@ services:
     env_file:
       - .env
     expose:
-      - "8009"
+      - "8008"
     volumes:
       - .:/app              
       - ./service:/app/service
@@ -40,7 +40,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/logs:/var/log/nginx
     depends_on:
       - web1
