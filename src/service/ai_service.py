@@ -1,4 +1,4 @@
-from model.transaction import PurchaseIntent, UserIntent
+from model.purchase import PurchaseIntent, UserIntent
 from core.ai_client import client
 from core.prompts import PURCHASE_PROMPT
 

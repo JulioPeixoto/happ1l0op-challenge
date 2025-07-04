@@ -6,10 +6,9 @@ from db.repository.transaction_repository import TransactionRepository
 from model.transaction import (
     TransactionCreate,
     TransactionStatus,
-    PurchaseIntent,
     AIResponse,
-    UserIntent,
 )
+from model.purchase import PurchaseIntent, UserIntent
 from model.product import Product
 
 

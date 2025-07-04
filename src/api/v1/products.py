@@ -6,6 +6,9 @@ from model.product import ProductCreate, ProductUpdate, ProductResponse
 from service.product_service import ProductService
 from db.database import get_session
 
+from model.transaction import AIResponse
+from service.purchase_service import PurchaseService
+
 router = APIRouter(tags=["products"])
 
 @router.post("/products", response_model=ProductResponse, status_code=201)

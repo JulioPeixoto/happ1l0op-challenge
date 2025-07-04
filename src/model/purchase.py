@@ -17,7 +17,7 @@ class PurchaseIntent(BaseModel):
     confidence: float = Field(description="Confidence level 0-1", ge=0, le=1)
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "examples": [
                 {
                     "intent": "purchase",
