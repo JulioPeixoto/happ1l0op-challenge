@@ -21,6 +21,15 @@ class TransactionRepository:
         self.session.refresh(transaction)
         return transaction
 
+    def get_all(self, skip: int = 0, limit: int = 100) -> List[Transaction]:
+        statement = (
+            select(Transaction)
+            .offset(skip)
+            .limit(limit)
+            .order_by(Transaction.created_at.desc())
+        )
+        return self.session.exec(statement).all()
+
     def get_by_id(self, transaction_id: int) -> Optional[Transaction]:
         return self.session.get(Transaction, transaction_id)
 
