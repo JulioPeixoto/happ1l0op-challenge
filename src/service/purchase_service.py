@@ -1,15 +1,15 @@
 from sqlmodel import Session
 from typing import Optional
 
-from db.repository.product_repository import ProductRepository
-from db.repository.transaction_repository import TransactionRepository
-from model.transaction import (
+from src.db.repository.product_repository import ProductRepository
+from src.db.repository.transaction_repository import TransactionRepository
+from src.model.transaction import (
     TransactionCreate,
     TransactionStatus,
     AIResponse,
 )
-from model.purchase import PurchaseIntent, UserIntent
-from model.product import Product
+from src.model.purchase import PurchaseIntent, UserIntent
+from src.model.product import Product
 
 
 class PurchaseService:

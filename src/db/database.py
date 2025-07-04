@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Session, create_engine
 from typing import Generator
-from settings import DATABASE_URL
+from src.settings import DATABASE_URL
 
 
 sql_engine = create_engine(

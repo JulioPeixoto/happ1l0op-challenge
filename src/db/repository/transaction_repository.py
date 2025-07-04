@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from datetime import datetime, timedelta
 
-from model.transaction import (
+from src.model.transaction import (
     Transaction,
     TransactionCreate,
     TransactionStatus,

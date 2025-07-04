@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from model.purchase import PurchaseIntent
+from src.model.purchase import PurchaseIntent
 
 
 class ChatRequest(BaseModel):

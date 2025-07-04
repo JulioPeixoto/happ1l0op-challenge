@@ -1,8 +1,8 @@
 from sqlmodel import Session
 from typing import List, Optional
 
-from db.repository.product_repository import ProductRepository
-from model.product import Product, ProductCreate, ProductUpdate, ProductResponse
+from src.db.repository.product_repository import ProductRepository
+from src.model.product import Product, ProductCreate, ProductUpdate, ProductResponse
 
 
 class ProductService:

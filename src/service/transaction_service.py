@@ -2,8 +2,8 @@ from sqlmodel import Session
 from typing import List, Optional
 from datetime import datetime
 
-from db.repository.transaction_repository import TransactionRepository
-from model.transaction import TransactionResponse
+from src.db.repository.transaction_repository import TransactionRepository
+from src.model.transaction import TransactionResponse
 
 
 class TransactionService:

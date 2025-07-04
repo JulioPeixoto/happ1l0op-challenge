@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from datetime import datetime
 
-from model.product import Product, ProductCreate, ProductUpdate
+from src.model.product import Product, ProductCreate, ProductUpdate
 
 
 class ProductRepository:

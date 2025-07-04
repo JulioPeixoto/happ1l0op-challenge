@@ -1,6 +1,6 @@
-from model.purchase import PurchaseIntent, UserIntent
-from core.ai_client import client
-from core.prompts import PURCHASE_PROMPT
+from src.model.purchase import PurchaseIntent, UserIntent
+from src.core.ai_client import client
+from src.core.prompts import PURCHASE_PROMPT
 
 
 class AIService:

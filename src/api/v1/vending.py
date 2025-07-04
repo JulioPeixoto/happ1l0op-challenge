@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
-from db.database import get_session
-from service.ai_service import AIService
-from service.purchase_service import PurchaseService
-from model.ai import AIResponse, ChatRequest
+from src.db.database import get_session
+from src.service.ai_service import AIService
+from src.service.purchase_service import PurchaseService
+from src.model.ai import AIResponse, ChatRequest
 
 router = APIRouter(tags=["vending-machine"])
 
