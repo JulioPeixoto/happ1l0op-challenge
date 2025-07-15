@@ -1,4 +1,4 @@
-# Happyloop Challenge - AI-Powered Soda Vending Machine
+#  AI-Powered Soda Vending Machine
 
 A simple AI-powered API for a soda vending machine that interprets natural language commands to sell products, track inventory, and manage transactions.
 
